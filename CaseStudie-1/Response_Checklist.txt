@@ -1,0 +1,25 @@
+here is the feedback for your first case study. 
+
++ The admin subnet is too small: you forgot about the router and switch IPs! So your addressing needs for the admin network is 16 hosts, not 14. 
++ Otherwise your subnets are good. 
+
+Report/Documentation:
++ For the most part, the documentation is good.
+- The network diagram does not indicate the link speed for each link.
++ The network diagram also does not show the interface details (to which interface a cable is connected). This can be configured to be shown in packettracer.
+- The network diagram does not show the number of hosts per LAN. 
++ The IP address table includes too many PCs, two per network were sufficient. 
+- The report states: "The devices have all been configured with the RIPv2 and all subnets are advertised with the exception of the serial links between the routers. This is because if there is no need to access these from the user networks. If they need to be configured this can be done by setting up VLANs or via console cable."
+This makes no sense: If you want to have connectivity, the WAN links need to be included in the routing process. Since this is RIP, you are lucky and it works anyway. As you probably already found out by now, your suggested setup would not work with OSPF. 
+- "However the switches has only been configured with hostname. Passwords and encryption was not stated as requirements by the ABC Research Company but could easily be implemented." -> This is part of the basic configuration and should be there. 
+
+Basic configuration:
+
++ None of the switches has a proper hostname.
++ None of the switches has an assigned IP address or password, and are thus not remotely configurable. 
++ All routers with LAN connections use fast ethernet instead of gigabit ethernet to connect the LANs. The router interfaces are gigabit, but the switch interfaces are "fast ethernet", so the speed is "fast ethernet" (100mbs). While not strictly a requirement, it is counter-intuitive: if you have a faster interface available for an aggregated link, use it. 
+
+Routing:
++ You forgot "no auto-summary" on all routers in the RIP process. 
+- The ISP router only has minimal configuration since it is not in your domain, and the static routes are set correctly, very good! However, on all routers, you have a default-gateway and a static default route configured, in addition to the default route propagated via RIP (propagation via RIP is the correct way). If you change the default route of the RIP process, it will be ignored everywhere, because the local changes override the RIP default. 
+- You are advertising routing updates into the LANs (no passive interfaces). 
